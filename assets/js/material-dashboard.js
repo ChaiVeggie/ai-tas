@@ -22,7 +22,7 @@
     // if we are on windows OS we activate the perfectScrollbar function
     //$('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar();
 
-    new PerfectScrollbar('.main-panel, .sidebar, .sidebar-wrapper');
+    //new PerfectScrollbar('.main-panel, .sidebar, .sidebar-wrapper');
 
     //$('html').addClass('perfect-scrollbar-on');
   } else {
