@@ -117,10 +117,9 @@
                     <div class="row justify-content-center">
                         <!--Text to speech controls-->
                         <div id="textToSpeech">
-                            <button class="tab current" onclick="toggleHost(event)">Grace</button>
-                            <button class="tab" onclick="toggleHost(event)">Alien</button>
+                            <button class="tab current">Grace</button>
                             <div>
-                                <textarea size="23" type="text" class="textEntry Grace">
+                                <textarea type="text" class="textEntry Grace">
                                                 <speak>
                                                 <amazon:domain name="conversational">
                                                     Hello, my name is Grace. I used to only be a host inside Amazon Sumerian, but
@@ -130,17 +129,7 @@
                                                     my friend and I here are in Babylon js.
                                                 </amazon:domain>
                                                 </speak>
-                                                </textarea>
-                                <textarea size="23" type="text" class="textEntry Alien">
-                                                <speak>
-                                                    Hi there! As you can see I'm set up to be a host too, although I don't use
-                                                    the same type of skeleton as any of the original Amazon Sumerian hosts. With
-                                                    open source hosts, you can apply host functionality to any custom animated
-                                                    character you'd like. I'm excited to see what kinds of interesting host
-                                                    characters you'll bring to life!
-                                                </speak>
-                                            </textarea>
-
+                                </textarea>
                             </div>
                             <div>
                                 <button id="play" class="speechButton material-icons">play_arrow</button>
@@ -169,8 +158,7 @@
                 <!-- <nav class="float-left">
                         <ul>
                             <li>
-                                <a href="https://www.creative-tim.com">
-                                    Creative Tim
+                                <a href="">
                                 </a>
                             </li>
                         </ul>
@@ -180,7 +168,7 @@
                         <script>
                             document.write(new Date().getFullYear())
                         </script>, made with <i class="material-icons">favorite</i> by
-                        <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> for a better web.
+                        <a href="" target="_blank"></a>
                     </div> -->
                 <!-- your footer here -->
             </div>
@@ -206,8 +194,10 @@
     <script>
         const speakers = new Map([
             ['Grace', undefined],
-            ['Alien', undefined],
+            //['Alien', undefined],
         ]);
+
+        const name = 'Grace';
 
         main();
 
@@ -229,9 +219,7 @@
             // Define the glTF assets that will represent the hosts
             const characterFile1 =
                 './assets/glTF/characters/adult_female/grace/grace.gltf';
-            const characterFile2 = './assets/glTF/characters/alien/alien.gltf';
             const animationPath1 = './assets/glTF/animations/adult_female';
-            const animationPath2 = './assets/glTF/animations/alien';
             const animationFiles = [
                 'stand_idle.glb',
                 'lipsync.glb',
@@ -263,21 +251,9 @@
                 animationPath1,
                 animationFiles
             );
-            const {
-                character: character2,
-                clips: clips2,
-                bindPoseOffset: bindPoseOffset2,
-            } = await loadCharacter(
-                scene,
-                characterFile2,
-                animationPath2,
-                animationFiles
-            );
 
             character1.position.x = 1.25;
-            character1.rotation.y = -0.5;
-            character2.position.x = -0.5;
-            character2.rotation.y = 0.5;
+            character1.rotation.y = -0.2;
 
             // Find the joints defined by name
             const children1 = character1.getDescendants(false);
@@ -285,11 +261,6 @@
                 child => child.name === audioAttachJoint1
             );
             const lookTracker1 = children1.find(child => child.name === lookJoint1);
-            const children2 = character2.getDescendants(false);
-            const audioAttach2 = children2.find(
-                child => child.name === audioAttachJoint2
-            );
-            const lookTracker2 = children2.find(child => child.name === lookJoint2);
 
             // Read the gesture config file. This file contains options for splitting up
             // each animation in gestures.glb into 3 sub-animations and initializing them
@@ -297,18 +268,12 @@
             const gestureConfig1 = await fetch(
                 `${animationPath1}/${gestureConfigFile}`
             ).then(response => response.json());
-            const gestureConfig2 = await fetch(
-                `${animationPath2}/${gestureConfigFile}`
-            ).then(response => response.json());
 
             // Read the point of interest config file. This file contains options for
             // creating Blend2dStates from look pose clips and initializing look layers
             // on the PointOfInterestFeature.
             const poiConfig1 = await fetch(
                 `${animationPath1}/${poiConfigFile}`
-            ).then(response => response.json());
-            const poiConfig2 = await fetch(
-                `${animationPath2}/${poiConfigFile}`
             ).then(response => response.json());
 
             const [
@@ -339,34 +304,6 @@
                 scene,
                 camera
             );
-            const [
-                idleClips2,
-                lipsyncClips2,
-                gestureClips2,
-                emoteClips2,
-                faceClips2,
-                blinkClips2,
-                poiClips2,
-            ] = clips2;
-            const host2 = createHost(
-                character2,
-                audioAttach2,
-                voice2,
-                voiceEngine,
-                idleClips2[0],
-                faceClips2[0],
-                lipsyncClips2,
-                gestureClips2,
-                gestureConfig2,
-                emoteClips2,
-                blinkClips2,
-                poiClips2,
-                poiConfig2,
-                lookTracker2,
-                bindPoseOffset2,
-                scene,
-                camera
-            );
 
             // Turn down blink layer weight to account for the difference in eyelid height between Grace and Fiona
             host1.AnimationFeature.setLayerWeight('Blink', 0.5);
@@ -374,14 +311,11 @@
             // Set up each host to look at the other when the other speaks and at the
             // camera when speech ends
             const onHost1StartSpeech = () => {
-                host2.PointOfInterestFeature.setTarget(lookTracker1);
+                //host2.PointOfInterestFeature.setTarget(lookTracker1);
             };
-            const onHost2StartSpeech = () => {
-                host1.PointOfInterestFeature.setTarget(lookTracker2);
-            };
+
             const onStopSpeech = () => {
                 host1.PointOfInterestFeature.setTarget(camera);
-                host2.PointOfInterestFeature.setTarget(camera);
             };
 
             host1.listenTo(
@@ -392,14 +326,7 @@
                 host1.TextToSpeechFeature.EVENTS.resume,
                 onHost1StartSpeech
             );
-            host2.listenTo(
-                host2.TextToSpeechFeature.EVENTS.play,
-                onHost2StartSpeech
-            );
-            host2.listenTo(
-                host2.TextToSpeechFeature.EVENTS.resume,
-                onHost2StartSpeech
-            );
+
             HOST.aws.TextToSpeechFeature.listenTo(
                 HOST.aws.TextToSpeechFeature.EVENTS.pause,
                 onStopSpeech
@@ -417,7 +344,6 @@
             await speechInit;
 
             speakers.set('Grace', host1);
-            speakers.set('Alien', host2);
 
             initializeUX();
         }
@@ -458,8 +384,8 @@
             );
             camera.minZ = 0.1;
             camera.maxZ = 1000;
-            camera.setPosition(new BABYLON.Vector3(0, 1.4, 3.1));
-            camera.setTarget(new BABYLON.Vector3(0, 0.8, 0));
+            camera.setPosition(new BABYLON.Vector3(1.4, 1.4, 2.5)); //0, 1.4, 3.1
+            camera.setTarget(new BABYLON.Vector3(1.2, 1, 0)); //0, 0.8, 0
             camera.wheelDeltaPercentage = 0.01;
             camera.attachControl(canvas, true);
 
@@ -850,35 +776,10 @@
             return { name, host: speakers.get(name) };
         }
 
-        // Update UX with data for the current host
-        function toggleHost(evt) {
-            const tab = evt.target;
-            const allTabs = document.getElementsByClassName('tab');
+        function initializeUX() {
 
-            // Update tab classes
-            for (let i = 0, l = allTabs.length; i < l; i++) {
-                if (allTabs[i] !== tab) {
-                    allTabs[i].classList.remove('current');
-                } else {
-                    allTabs[i].classList.add('current');
-                }
-            }
-
-            // Show/hide speech input classes
-            const { name, host } = getCurrentHost(speakers);
-            const textEntries = document.getElementsByClassName('textEntry');
-
-            for (let i = 0, l = textEntries.length; i < l; i += 1) {
-                const textEntry = textEntries[i];
-
-                if (textEntry.classList.contains(name)) {
-                    textEntry.classList.remove('hidden');
-                } else {
-                    textEntry.classList.add('hidden');
-                }
-            }
-
-            // Update emote selector
+            // Initialise Emote Dropdown
+            const { host } = getCurrentHost(speakers);
             const emoteSelect = document.getElementById('emotes');
             emoteSelect.length = 0;
             const emotes = host.AnimationFeature.getAnimations('Emote');
@@ -893,15 +794,13 @@
                     emoteSelect.value = emote;
                 }
             });
-        }
 
-        function initializeUX(speakers) {
             // Play, pause, resume and stop the contents of the text input as speech
             // when buttons are clicked
             ['play', 'pause', 'resume', 'stop', 'rasa'].forEach(id => {
                 const button = document.getElementById(id);
                 button.onclick = () => {
-                    const { name, host } = getCurrentHost(speakers);
+                    const { host } = getCurrentHost(speakers);
                     const speechInput = document.getElementsByClassName(
                         `textEntry ${name}`
                     )[0];
@@ -933,7 +832,6 @@
                             const rasaResponseJson = await response.json(); //extract JSON from the http response
                             console.log('rasaResponse: ' + rasaResponseJson[0].text);
                             host.TextToSpeechFeature['play'](rasaResponseJson[0].text);
-                            //host.TextToSpeechFeature['play']();
 
                             // <speak>
                             //   <amazon:domain name="conversational">
@@ -956,7 +854,7 @@
             // Update the text area text with gesture SSML markup when clicked
             const gestureButton = document.getElementById('gestures');
             gestureButton.onclick = () => {
-                const { name, host } = getCurrentHost(speakers);
+                // const { name, host } = getCurrentHost(speakers);
                 const speechInput = document.getElementsByClassName(
                     `textEntry ${name}`
                 )[0];
@@ -972,16 +870,13 @@
             };
 
             // Play emote on demand with emote button
-            const emoteSelect = document.getElementById('emotes');
             const emoteButton = document.getElementById('playEmote');
             emoteButton.onclick = () => {
-                const { host } = getCurrentHost(speakers);
                 host.GestureFeature.playGesture('Emote', emoteSelect.value);
             };
 
             // Initialize tab
             const tab = document.getElementsByClassName('tab current')[0];
-            toggleHost({ target: tab });
         }
     </script>
 </body>
