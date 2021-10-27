@@ -106,10 +106,24 @@
                         <canvas id="renderCanvas"></canvas>
                     </div>
 
+                    <!--Chat history UI-->
+
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <textarea disabled class="form-control" id="rasaResponse" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-2">
+                            <button id="rasa" class="btn btn-primary">View chat history</button>
+                        </div>
+                    </div>
+
                     <!--Chat UI-->
                     <div class="row justify-content-center">
-                        <div class="col">
-                            <textarea autofocus type="text" class="textEntryRASA form-control"></textarea>
+                        <div class="col-md-8">
+                            <input autofocus type="text" placeholder="Enter your questions here..."
+                                class="textEntryRASA form-control input-lg" />
+                        </div>
+                        <div class="col-md-2">
                             <button id="rasa" class="btn btn-primary">Send</button>
                         </div>
                     </div>
@@ -809,47 +823,70 @@
                     //console.log("ID: " + id); //play, pause, etc
 
                     if (id == 'rasa') {
-                        const rasaChatInput = document.getElementsByClassName(`textEntryRASA`)[0].value;
-                        document.getElementsByClassName(`textEntryRASA`)[0].value = ""; //Reset textfield
-
-                        var inputObjectData = {
-                            "sender": "test_user",
-                            "message": rasaChatInput
-                        };
-
-                        //console.log('inputObjectData: ' + inputObjectData);
-                        console.log('rasaChatInput: ' + rasaChatInput);
-
-                        (async () => {
-                            //console.log("RASA ASYNC");
-                            const response = await fetch('http://localhost:5005/webhooks/rest/webhook', {
-                                method: 'POST',
-                                body: JSON.stringify(inputObjectData),
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            });
-                            const rasaResponseJson = await response.json(); //extract JSON from the http response
-                            console.log('rasaResponse: ' + rasaResponseJson[0].text);
-                            host.TextToSpeechFeature['play'](rasaResponseJson[0].text);
-
-                            // <speak>
-                            //   <amazon:domain name="conversational">
-                            //     Hello, my name is Grace. I used to only be a host inside Amazon Sumerian, but
-                            //     now you can use me in other Javascript runtime environments like three js
-                            //     and Babylon js. Right now,
-                            //     <mark name='{"feature":"PointOfInterestFeature","method":"setTargetByName","args":["char:gaze"]}' />
-                            //     my friend and I here are in Babylon js.
-                            //   </amazon:domain>
-                            // </speak>
-
-                        })();
+                        playRasaResponse();
                     }
                     else {
                         host.TextToSpeechFeature[id](speechInput.value);
                     }
                 };
             });
+
+            function playRasaResponse() {
+                const rasaChatInput = document.getElementsByClassName(`textEntryRASA`)[0].value;
+                document.getElementsByClassName(`textEntryRASA`)[0].value = ""; //Reset textfield
+
+                //check if input field is empty
+                if (rasaChatInput === "") {
+                    host.TextToSpeechFeature['play']("I can't read your mind, please enter something!");
+                    return;
+                }
+                if (rasaChatInput === "something") {
+                    host.TextToSpeechFeature['play']("ha ha, very funny");
+                    return;
+                }
+
+                var inputObjectData = {
+                    "sender": "test_user",
+                    "message": rasaChatInput
+                };
+
+                //console.log('inputObjectData: ' + inputObjectData);
+                console.log('rasaChatInput: ' + rasaChatInput);
+
+                (async () => {
+                    //console.log("RASA ASYNC");
+                    const response = await fetch('http://localhost:5005/webhooks/rest/webhook', {
+                        method: 'POST',
+                        body: JSON.stringify(inputObjectData),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const rasaResponseJson = await response.json(); //extract JSON from the http response
+                    console.log('rasaResponse: ' + rasaResponseJson[0].text);
+                    document.getElementById("rasaResponse").value = rasaResponseJson[0].text;
+                    host.TextToSpeechFeature['play'](rasaResponseJson[0].text);
+
+                    // <speak>
+                    //   <amazon:domain name="conversational">
+                    //     Hello, my name is Grace. I used to only be a host inside Amazon Sumerian, but
+                    //     now you can use me in other Javascript runtime environments like three js
+                    //     and Babylon js. Right now,
+                    //     <mark name='{"feature":"PointOfInterestFeature","method":"setTargetByName","args":["char:gaze"]}' />
+                    //     my friend and I here are in Babylon js.
+                    //   </amazon:domain>
+                    // </speak>
+
+                    // <speak><amazon:domain name="conversational">
+                    //     <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","wave",{}]}' />Hello, <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","self",{}]}' />my name is Grace. <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","self",{}]}' />I used to <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","one",{}]}' />only be a host <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","in",{}]}' />inside Amazon Sumerian, but
+                    //     <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","in",{}]}' />now <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","you",{}]}' />you can use <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","self",{}]}' />me in other Javascript runtime <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","many",{}]}' />environments like three js
+                    //     and Babylon js. Right <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","in",{}]}' />now,
+                    //     <mark name='{"feature":"PointOfInterestFeature","method":"setTargetByName","args":["char:gaze"]}' />
+                    //     <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","self",{}]}' />my <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","heart",{}]}' />friend and <mark name='{"feature":"GestureFeature","method":"playGesture","args":["Gesture","self",{}]}' />I here are in Babylon js.
+                    // </amazon:domain></speak>
+
+                })();
+            }
 
             // Update the text area text with gesture SSML markup when clicked
             const gestureButton = document.getElementById('gestures');
@@ -877,7 +914,16 @@
 
             // Initialize tab
             const tab = document.getElementsByClassName('tab current')[0];
+
+            //Pressing enter while on the focus on the input field sends the message.
+            document.getElementsByClassName("textEntryRASA")[0].addEventListener('keydown', (event) => {
+                if (event.which === 13 && event.shiftKey == false) { //13 refers to the enter key
+                    playRasaResponse();
+                }
+            });
         }
+
+
     </script>
 </body>
 
