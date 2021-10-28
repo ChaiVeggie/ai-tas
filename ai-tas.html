@@ -854,18 +854,35 @@
                 console.log('rasaChatInput: ' + rasaChatInput);
 
                 (async () => {
-                    //console.log("RASA ASYNC");
                     const response = await fetch('http://localhost:5005/webhooks/rest/webhook', {
                         method: 'POST',
                         body: JSON.stringify(inputObjectData),
                         headers: {
                             'Content-Type': 'application/json'
                         }
+                    }).then((response) => {
+                        //Bad response returned
+                        if (response.status >= 400 && response.status < 600) {
+                            throw new Error("Bad response from server");
+                        }
+                        return response;
+                    }).then(response => response.json())
+                    .then((data) => {
+                        //successful response
+                        // console.log('data: ' + JSON.stringify(data));
+                        // console.log('data[0].text: ' + data[0].text);
+                        document.getElementById("rasaResponse").value = data[0].text;
+                        host.TextToSpeechFeature['play'](data[0].text);
+                    }).catch((error) => {
+                        //network error
+                        console.log(error);
+                        host.TextToSpeechFeature['play']("Sorry, there seems to be some technical issues at the moment");
                     });
-                    const rasaResponseJson = await response.json(); //extract JSON from the http response
-                    console.log('rasaResponse: ' + rasaResponseJson[0].text);
-                    document.getElementById("rasaResponse").value = rasaResponseJson[0].text;
-                    host.TextToSpeechFeature['play'](rasaResponseJson[0].text);
+
+                    //const rasaResponseJson = await response.json(); //extract JSON from the http response
+                    //console.log('rasaResponse: ' + rasaResponseJson[0].text);
+                    //document.getElementById("rasaResponse").value = rasaResponseJson[0].text;
+                    //host.TextToSpeechFeature['play'](rasaResponseJson[0].text);
 
                     // <speak>
                     //   <amazon:domain name="conversational">
@@ -922,8 +939,6 @@
                 }
             });
         }
-
-
     </script>
 </body>
 
