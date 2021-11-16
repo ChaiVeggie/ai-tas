@@ -85,6 +85,8 @@
         </footer>
     </div>
     </div>
+    <script defer src="/assets/js/login.js"></script>
+
     <!--   Core JS Files   -->
     <script src="./assets/js/core/jquery.min.js"></script>
     <script src="./assets/js/core/popper.min.js"></script>
@@ -100,47 +102,6 @@
     <script src="./assets/js/plugins/bootstrap-notify.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="./assets/js/material-dashboard.js?v=2.1.0"></script>
-
-    <script>
-        function login() {
-            var email = document.getElementById('email').value;
-            var password = document.getElementById('password').value;
-
-            var inputObjectData = {
-                "usr": email,
-                "pwd": password
-            };
-
-            (async () => {
-                const response = await fetch('http://localhost:8000/api/method/ai_tas.api.login', {
-                    method: 'POST',
-                    body: JSON.stringify(inputObjectData),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then((response) => {
-                    //Bad response returned
-                    if (response.status >= 400 && response.status < 600) {
-                        throw new Error("Bad response from server");
-                    }
-                    return response;
-                }).then(response => response.json())
-                    .then((data) => {
-                        //successful login
-                        console.log('data: ' + JSON.stringify(data));
-                        //console.log(data.message.api_key);
-
-                        //Store token
-                        const token = data.message.api_key + ":" + data.message.api_secret;
-                        localStorage.setItem('token', token)
-                        console.log(token);
-                    }).catch((error) => {
-                        //network error
-                        console.log(error);
-                    });
-            })();
-        }
-    </script>
 </body>
 
 </html>
