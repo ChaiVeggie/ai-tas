@@ -35,6 +35,27 @@
 
 <body class="dark-edition">
     <div class="wrapper ">
+        <!-- Modal -->
+        <div class="modal fade" id="chatHistoryModal" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Chat History</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="sidebar" data-color="purple" data-background-color="black">
             <!--
       Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
@@ -113,7 +134,8 @@
                             <textarea disabled class="form-control" id="rasaResponse" rows="3"></textarea>
                         </div>
                         <div class="col-md-2">
-                            <button id="rasa" class="btn btn-primary">View chat history</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#chatHistoryModal">View chat history</button>
                         </div>
                     </div>
 
@@ -206,6 +228,21 @@
 
     <!--Create the Babylon.js scene-->
     <script>
+        const token = localStorage.getItem('token');
+
+        async function isLoggedIn() {
+            //console.log(token);
+            if (!token) return false
+        }
+
+        async function autoRedirect() {
+            console.log("autoredirect");
+            const validLogin = await isLoggedIn()
+            if (!validLogin && location.pathname !== '/login/') window.location.href = "login.html";
+        }
+
+        // autoRedirect();
+
         const speakers = new Map([
             ['Grace', undefined],
             //['Alien', undefined],
@@ -831,6 +868,40 @@
                 };
             });
 
+            //Save to Frappe server instance
+            function saveToServer(user, msg) {
+                var inputObjectData = {
+                    "user": user,
+                    "message": msg
+                };
+                (async () => {
+                    const response = await fetch('http://localhost:8000/api/resource/ChatMessages', {
+                        method: 'POST',
+                        body: JSON.stringify(inputObjectData),
+                        headers: {
+                            'Authorization': 'token ' + token,
+                            'Content-Type': 'application/json'
+                        }
+
+                    }).then((response) => {
+                        //Bad response returned
+                        if (response.status >= 400 && response.status < 600) {
+                            //console.log(JSON.stringify(req.headers));
+                            throw new Error("Bad response from server");
+                        }
+                        return response;
+                    }).then(response => response.json())
+                        .then((data) => {
+                            //successful response
+                            console.log('data saved');
+                            console.log('data: ' + JSON.stringify(data));
+                        }).catch((error) => {
+                            //network error
+                            console.log(error);
+                        });
+                })();
+            }
+
             function playRasaResponse() {
                 const rasaChatInput = document.getElementsByClassName(`textEntryRASA`)[0].value;
                 document.getElementsByClassName(`textEntryRASA`)[0].value = ""; //Reset textfield
@@ -842,13 +913,15 @@
                 }
                 if (rasaChatInput === "something") {
                     host.TextToSpeechFeature['play']("ha ha, very funny");
-                    return;
+                    return; s
                 }
 
                 var inputObjectData = {
                     "sender": "test_user",
                     "message": rasaChatInput
                 };
+
+                saveToServer("test user", rasaChatInput);
 
                 //console.log('inputObjectData: ' + inputObjectData);
                 console.log('rasaChatInput: ' + rasaChatInput);
@@ -867,17 +940,17 @@
                         }
                         return response;
                     }).then(response => response.json())
-                    .then((data) => {
-                        //successful response
-                        // console.log('data: ' + JSON.stringify(data));
-                        // console.log('data[0].text: ' + data[0].text);
-                        document.getElementById("rasaResponse").value = data[0].text;
-                        host.TextToSpeechFeature['play'](data[0].text);
-                    }).catch((error) => {
-                        //network error
-                        console.log(error);
-                        host.TextToSpeechFeature['play']("Sorry, there seems to be some technical issues at the moment");
-                    });
+                        .then((data) => {
+                            //successful response
+                            // console.log('data: ' + JSON.stringify(data));
+                            // console.log('data[0].text: ' + data[0].text);
+                            document.getElementById("rasaResponse").value = data[0].text;
+                            host.TextToSpeechFeature['play'](data[0].text);
+                        }).catch((error) => {
+                            //network error
+                            console.log(error);
+                            host.TextToSpeechFeature['play']("Sorry, there seems to be some technical issues at the moment");
+                        });
 
                     //const rasaResponseJson = await response.json(); //extract JSON from the http response
                     //console.log('rasaResponse: ' + rasaResponseJson[0].text);

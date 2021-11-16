@@ -68,6 +68,17 @@
                                     </p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  <i class="material-icons">person</i>
+                                  <p class="d-lg-none d-md-block">
+                                    Account
+                                  </p>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" onclick="logout();">Log Out</a>
+                                  </div>
+                              </li>
                             <!-- your navbar here -->
                         </ul>
                     </div>
@@ -90,23 +101,6 @@
             </div>
             <footer class="footer">
                 <div class="container-fluid">
-                    <!-- <nav class="float-left">
-                        <ul>
-                            <li>
-                                <a href="https://www.creative-tim.com">
-                                    Creative Tim
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <div class="copyright float-right">
-                        &copy;
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>, made with <i class="material-icons">favorite</i> by
-                        <a href="" target="_blank">Creative Tim</a> for a better web.
-                    </div> -->
-                    <!-- your footer here -->
                 </div>
             </footer>
         </div>
@@ -129,6 +123,27 @@
     <script src="./assets/js/material-dashboard.js?v=2.1.0"></script>
 
     <script>
+        const token = localStorage.getItem('token');
+        async function isLoggedIn() {
+            //console.log(token);
+            if (!token) return false
+        }
+
+        async function autoRedirect() {
+            console.log("autoredirect");
+            const validLogin = await isLoggedIn()
+            if (!validLogin && location.pathname !== '/login/') window.location.href = "login.html";
+            //if (validLogin && location.pathname === '/login/') redirect('/')
+        }
+
+        autoRedirect();
+
+        function logout () {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.replace("http://127.0.0.1:5500/login.html");
+        }
+
         $(document).ready(function () {
             $().ready(function () {
                 $sidebar = $('.sidebar');
