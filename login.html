@@ -56,7 +56,7 @@
                         <!-- <p class="card-category">Created using Roboto Font Family</p> -->
                     </div>
                     <div class="card-body">
-                        <form action="#" onsubmit="return login();">
+                        <form action="javascript:login();">
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -73,7 +73,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Login</button>
+                            <div id="authError" class="alert alert-danger" style="display: none">
+                                <button type="button" class="close" onclick="hideNotif();">
+                                  <i class="material-icons">close</i>
+                                </button>
+                                <span>Authentication error!</span>
+                              </div>
+                            <button class="btn btn-primary">Login</button>
                         </form>
                     </div>
                 </div>

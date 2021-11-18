@@ -19,6 +19,9 @@ class Auth {
     logout() {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('fullname');
+        localStorage.removeItem('email');
+        localStorage.removeItem('sid');
         window.location.replace("/");
     }
 }
