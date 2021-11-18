@@ -623,12 +623,14 @@ function initializeUX() {
         };
     });
 
-    //Save to Frappe server instance
-    function saveToServer(user, msg) {
+    //Save to Frappe server instance, ensure token is generated for users to be authorized
+    function saveToServer(msg, bot) {
         const token = localStorage.getItem("token");
-        var inputObjectData = {
+        const user = localStorage.getItem("user");
+        var inputObjectData = { //for Frappe server
             "user": user,
-            "message": msg
+            "message": msg,
+            "bot": bot //Checks if the msg is from the bot, value 1 or 0
         };
         (async () => {
             const response = await fetch('http://localhost:8000/api/resource/ChatMessages', {
@@ -652,7 +654,6 @@ function initializeUX() {
                     console.log('data saved');
                     console.log('data: ' + JSON.stringify(data));
                 }).catch((error) => {
-                    //network error
                     console.log(error);
                 });
         })();
@@ -669,18 +670,18 @@ function initializeUX() {
         }
         if (rasaChatInput === "something") {
             host.TextToSpeechFeature['play']("ha ha, very funny");
-            return; s
+            return;
         }
 
-        var inputObjectData = {
+        var inputObjectData = { //for rasa server
             "sender": "test_user",
             "message": rasaChatInput
         };
 
-        saveToServer("test user", rasaChatInput);
+        saveToServer(rasaChatInput, 0);
 
         //console.log('inputObjectData: ' + inputObjectData);
-        console.log('rasaChatInput: ' + rasaChatInput);
+        //console.log('rasaChatInput: ' + rasaChatInput);
 
         (async () => {
             const response = await fetch('http://localhost:5005/webhooks/rest/webhook', {
@@ -700,6 +701,8 @@ function initializeUX() {
                     //successful response
                     // console.log('data: ' + JSON.stringify(data));
                     // console.log('data[0].text: ' + data[0].text);
+
+                    saveToServer(data[0].text, 1); //Save the AI response to database, bot value set to 1 to show it is an AI
                     document.getElementById("rasaResponse").value = data[0].text;
                     host.TextToSpeechFeature['play'](data[0].text);
                 }).catch((error) => {
