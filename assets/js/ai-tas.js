@@ -632,6 +632,7 @@ function initializeUX() {
             "message": msg,
             "bot": bot //Checks if the msg is from the bot, value 1 or 0
         };
+        console.log("inputObjectData: " + inputObjectData.user, inputObjectData.message);
         (async () => {
             const response = await fetch('http://localhost:8000/api/resource/ChatMessages', {
                 method: 'POST',
@@ -640,7 +641,6 @@ function initializeUX() {
                     'Authorization': 'token ' + token,
                     'Content-Type': 'application/json'
                 }
-
             }).then((response) => {
                 //Bad response returned
                 if (response.status >= 400 && response.status < 600) {
