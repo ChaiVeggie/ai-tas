@@ -22,6 +22,9 @@ async function main() {
         window.AWS.VERSION
     );
 
+    //Environment file
+    const environmentFile = './assets/glTF/characters/adult_female/grace/grace.gltf';
+
     // Define the glTF assets that will represent the hosts
     const characterFile1 =
         './assets/glTF/characters/adult_female/grace/grace.gltf';
@@ -55,7 +58,8 @@ async function main() {
         scene,
         characterFile1,
         animationPath1,
-        animationFiles
+        animationFiles,
+        environmentFile
     );
 
     character1.position.x = 1.25;
@@ -217,11 +221,20 @@ function createScene() {
     shadowGenerator.blurKernel = 32;
 
     // Environment
-    var helper = scene.createDefaultEnvironment({
-        enableGroundShadow: true,
-    });
-    helper.groundMaterial.primaryColor.set(0.5, 0.5, 0.5);
-    helper.ground.receiveShadows = true;
+    // var helper = scene.createDefaultEnvironment({
+    //     enableGroundShadow: true,
+    // });
+    // helper.groundMaterial.primaryColor.set(0.5, 0.5, 0.5);
+    // helper.ground.receiveShadows = true;
+
+    var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, scene);
+    var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("Assets/textures/skybox2", scene);
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    skybox.material = skyboxMaterial;
 
     return { scene, camera };
 }
@@ -625,7 +638,7 @@ function initializeUX() {
 
     //Save to Frappe server instance, ensure token is generated for users to be authorized
     function saveToServer(msg, bot) {
-        const token = localStorage.getItem("token");
+        //const token = localStorage.getItem("token");
         const user = localStorage.getItem("user");
         var inputObjectData = { //for Frappe server
             "user": user,
@@ -636,11 +649,7 @@ function initializeUX() {
         (async () => {
             const response = await fetch('http://localhost:8000/api/resource/ChatMessages', {
                 method: 'POST',
-                body: JSON.stringify(inputObjectData),
-                headers: {
-                    'Authorization': 'token ' + token,
-                    'Content-Type': 'application/json'
-                }
+                body: JSON.stringify(inputObjectData)
             }).then((response) => {
                 //Bad response returned
                 if (response.status >= 400 && response.status < 600) {
@@ -702,9 +711,26 @@ function initializeUX() {
                     // console.log('data: ' + JSON.stringify(data));
                     // console.log('data[0].text: ' + data[0].text);
 
-                    saveToServer(data[0].text, 1); //Save the AI response to database, bot value set to 1 to show it is an AI
+                    //Save the AI response to database, bot value set to 1 to show it is an AI
+                    saveToServer(data[0].text, 1);
+
+                    //Set the text field to the AI's response
                     document.getElementById("rasaResponse").value = data[0].text;
-                    host.TextToSpeechFeature['play'](data[0].text);
+
+                    //Set gestures before playing.
+                    const gestureMap = host.GestureFeature.createGestureMap();
+                    const gestureArray = host.GestureFeature.createGenericGestureArray([
+                        'Gesture',
+                    ]);
+                    var outputWithSSML = HOST.aws.TextToSpeechUtils.autoGenerateSSMLMarks(
+                        data[0].text,
+                        gestureMap,
+                        gestureArray
+                    );
+                    //console.log(outputWithSSML);
+
+                    //Play final output
+                    host.TextToSpeechFeature['play'](outputWithSSML);
                 }).catch((error) => {
                     //network error
                     console.log(error);

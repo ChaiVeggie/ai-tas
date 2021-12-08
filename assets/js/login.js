@@ -17,7 +17,7 @@ function login() {
         })
         .then(response => response.json())
         .then((data) => {
-                //console.log('data: ' + JSON.stringify(data));
+                console.log('data: ' + JSON.stringify(data));
 
                 //Store token
                 if (data.message.success_key == 0) {
@@ -27,8 +27,10 @@ function login() {
                 }
                 else {
                     //successful login
-                    const token = data.message.api_key + ":" + data.message.api_secret;
-                    localStorage.setItem('token', token);
+
+                    //Get the API secret
+                    //const token = data.message.api_key + ":" + data.message.api_secret;
+                    //localStorage.setItem('token', token);
                     localStorage.setItem('user', data.message.username);
                     localStorage.setItem('fullname', data.full_name);
                     localStorage.setItem('email', data.message.email);

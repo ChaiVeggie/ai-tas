@@ -1,17 +1,27 @@
 class Auth {
-    constructor(){
+    constructor() {
         document.querySelector("body").style.display = "none";
-        const token = localStorage.getItem("token");
-        this.validateAuth(token);
+        
+        const user = localStorage.getItem("user");
+        this.validateAuth(user);
+
+        /*
+        var cookie = document.cookie
+                .split(';')
+                .map(cookie => cookie.split('='))
+                .reduce((accumulator, [key, value]) => ({ ...accumulator, [key.trim()]: decodeURIComponent(value) }), {});
+        */
+        //this.validateAuth(cookie);
+            
     }
 
     //check if there is token
-    validateAuth(token){
-        if (!token) {
+    validateAuth(user) {
+        if (user == null) {
             //console.log("No token");
             window.location.replace("login.html");
         }
-        else{
+        else {
             document.querySelector("body").style.display = "block";
         }
     }

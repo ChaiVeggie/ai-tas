@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>AI-TAS</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <!-- Material Kit CSS -->
+    <link href="assets/css/material-dashboard.css" rel="stylesheet" />
+</head>
+
+<body class="dark-edition">
+    <div class="wrapper ">
+        <div class="sidebar" data-color="purple" data-background-color="black">
+            <!--
+            Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+            Tip 2: you can also add an image using data-image tag 
+            -->
+            <div class="logo">
+                <a href="#" class="simple-text logo-normal">
+                    AI-TAS
+                </a>
+            </div>
+            <div class="sidebar-wrapper">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="material-icons">dashboard</i>
+                            <p>Home</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./ai-tas.html">
+                            <i class="material-icons">person</i>
+                            <p>AI-TAS</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./chat-history.html">
+                            <i class="material-icons">assignment</i>
+                            <p>Chat History</p>
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="javascript:void(0)">
+                            <i class="material-icons">create</i>
+                            <p>Feedback</p>
+                        </a>
+                    </li>
+                    <!-- your sidebar here -->
+                </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+                <div class="container-fluid">
+                    <div class="navbar-wrapper">
+                        <a class="navbar-brand" href="javascript:void(0)">Dashboard</a>
+                    </div>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="javascript:void(0)">
+                                    <i class="material-icons">notifications</i>
+                                    <p class="d-lg-none d-md-block">
+                                        Notifications
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="material-icons">person</i>
+                                    <p class="d-lg-none d-md-block">
+                                        Account
+                                    </p>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" onclick="new Auth().logout();">Log Out</a>
+                                </div>
+                            </li>
+                            <!-- your navbar here -->
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+            <div class="content">
+                <div class="container-fluid">
+                    <!-- your content here -->
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title">Field Testing for Artificial Intelligence - Teaching Assistant System
+                            </h4>
+                            <!-- <p class="card-category">Created using Roboto Font Family</p> -->
+                        </div>
+                        <div class="card-body">
+                            <form action="javascript:submitFeedback();">
+
+                                <!-- Age -->
+                                <div class="form-row">
+                                    <div class="form-group col-md-9">
+                                        <label for="formControlRange">What is your age?</label>
+                                        <br>
+                                        <input type="range" class="form-control-range" name="age" id="formControlRange"
+                                            min="18" max="50" onInput="$('#rangeval').html($(this).val())">
+                                        <b>Age: <span id="rangeval">
+                                                <!-- Default value -->
+                                                25
+                                            </span></b>
+                                    </div>
+                                </div>
+
+                                <!-- Gender -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="age">What is your gender?</label>
+
+                                        <!--Hidden input class with value set to none-->
+                                        <input type="radio" name="gender" value="none" checked hidden>
+
+                                        <!--Radio option-->
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="gender" value="M">
+                                                Male
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        <!--Radio option-->
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="gender" value="F">
+                                                Female
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- Programme enrolled -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="age">What is your nursing undergraduate program that you have
+                                            enrolled?</label>
+                                        <input type="radio" name="programmeEnrolled" value="none" checked hidden>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="programmeEnrolled"
+                                                    value="Normal Cohort">
+                                                Normal Cohort
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="programmeEnrolled"
+                                                    value="Direct Intake">
+                                                Direct Intake
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="programmeEnrolled"
+                                                    value="PCP">
+                                                Professional Convergent Program (PCP)
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Ethnicity -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="ethnicity">What is your ethnicity?</label>
+                                        <input type="radio" name="ethnicity" value="none" checked hidden>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="ethnicity"
+                                                    value="Chinese">
+                                                Chinese
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="ethnicity"
+                                                    value="Indian">
+                                                Indian
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="ethnicity"
+                                                    value="Malay">
+                                                Malay
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="ethnicity"
+                                                    value="Others">
+                                                Others
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Religion -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="religion">What is your religion?</label>
+                                        <input type="radio" name="religion" value="none" checked hidden>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="religion"
+                                                    value="Buddhism">
+                                                Buddhism
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="religion"
+                                                    value="Taoist">
+                                                Taoist
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="religion"
+                                                    value="Christianity">
+                                                Christianity
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="religion"
+                                                    value="Hinduism">
+                                                Hinduism
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="religion"
+                                                    value="Islam">
+                                                Islam
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="religion"
+                                                    value="Freethinker">
+                                                Freethinker
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="religion"
+                                                    value="Others">
+                                                Others
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Highest Education level -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="highestEducation">What is your highest educational level?</label>
+                                        <input type="radio" name="highestEducation" value="none" checked hidden>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="highestEducation"
+                                                    value="Junior College">
+                                                Junior College
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="highestEducation"
+                                                    value="Polytechnic">
+                                                Polytechnic
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="highestEducation"
+                                                    value="ITE">
+                                                Institution of Technical Education (ITE)
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="highestEducation"
+                                                    value="Bachelor’s degree">
+                                                Bachelor’s degree
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="highestEducation"
+                                                    value="Master’s degree">
+                                                Master’s degree
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="highestEducation"
+                                                    value="Others">
+                                                Others (Please specify)
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Used AI before -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="usedAIBefore">Have you ever used the Artificial Intelligence (AI) to
+                                            facilitate your learning?</label>
+                                        <input type="radio" name="usedAIBefore" value="none" checked hidden>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="usedAIBefore"
+                                                    value="Yes">
+                                                Yes
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="usedAIBefore"
+                                                    value="No">
+                                                No
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Intimidated by AI -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="intimidatedByAI">Would you feel intimidated if you are required to
+                                            use AI for your tutorials?</label>
+                                        <input type="radio" name="intimidatedByAI" value="none" checked hidden>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="intimidatedByAI"
+                                                    value="Yes">
+                                                Yes
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="intimidatedByAI"
+                                                    value="No">
+                                                No
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Comfort level with technology -->
+                                <div class="form-row">
+                                    <div class="form-group col-md-9">
+                                        <label for="formControlTechRange">Please rate your comfortable level with
+                                            technology <br>
+                                            (1= Least stressful, and 10 = most stressful)
+                                        </label>
+                                        <br>
+                                        <input type="range" class="form-control-range" name="techComfort"
+                                            id="formControlTechRange" min="1" max="10"
+                                            onInput="$('#techRangeVal').html($(this).val())">
+                                        <b>Comfort level: <span id="techRangeVal">
+                                                <!-- Default value, has to match with javascript as well -->
+                                                5
+                                            </span></b>
+                                    </div>
+                                </div>
+
+                                <!--SUS-->
+                                <div>
+                                    <h3>System Usability Scale (SUS)</h3>
+                                    <p> Instruction: <br> Please check the box that reflects your immediate response to
+                                        each statement. Don’t think too long about each statement.
+                                        Make sure you respond to every statement. If you don’t know how to respond,
+                                        simply check box '3'. <br>
+                                        Scale: 1 = strongly disagree, 2 = disagree, 3 = neutral, 4 = agree, 5 = strongly
+                                        agree
+                                    </p>
+
+                                    <!--Default hidden radio buttons to set default selection to none, used for validation-->
+                                    <input type="radio" name="susq1" value="none" checked hidden>
+                                    <input type="radio" name="susq2" value="none" checked hidden>
+                                    <input type="radio" name="susq3" value="none" checked hidden>
+                                    <input type="radio" name="susq4" value="none" checked hidden>
+                                    <input type="radio" name="susq5" value="none" checked hidden>
+                                    <input type="radio" name="susq6" value="none" checked hidden>
+                                    <input type="radio" name="susq7" value="none" checked hidden>
+                                    <input type="radio" name="susq8" value="none" checked hidden>
+                                    <input type="radio" name="susq9" value="none" checked hidden>
+                                    <input type="radio" name="susq10" value="none" checked hidden>
+
+                                    <table class="table">
+                                        <thead class=" text-primary">
+                                            <th>Statement</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1. I think that I would like to use this product frequently.</td>
+                                                <td><input  type="radio" name="susq1" value="1"> 1 </td>
+                                                <td><input  type="radio" name="susq1" value="2"> 2 </td>
+                                                <td><input  type="radio" name="susq1" value="3"> 3 </td>
+                                                <td><input  type="radio" name="susq1" value="4"> 4 </td>
+                                                <td><input  type="radio" name="susq1" value="5"> 5 </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td>2. I found the product unnecessarily complex</td>
+                                                <td><input  type="radio" name="susq2" value="1"> 1 </td>
+                                                <td><input  type="radio" name="susq2" value="2"> 2 </td>
+                                                <td><input  type="radio" name="susq2" value="3"> 3 </td>
+                                                <td><input  type="radio" name="susq2" value="4"> 4 </td>
+                                                <td><input  type="radio" name="susq2" value="5"> 5 </td>
+                                            </tr>
+                                            <tr>
+                                                <td>3. I thought the product was easy to use.</td>
+                                                <td><input  type="radio" name="susq3" value="1"> 1 </td>
+                                                <td><input  type="radio" name="susq3" value="2"> 2 </td>
+                                                <td><input  type="radio" name="susq3" value="3"> 3 </td>
+                                                <td><input  type="radio" name="susq3" value="4"> 4 </td>
+                                                <td><input  type="radio" name="susq3" value="5"> 5 </td>
+                                            </tr>
+                                            <tr>
+                                                <td>4. I think that I would need the support of a technical person to be able to use this product.</td>
+                                                <td><input  type="radio" name="susq4" value="1"> 1 </td>
+                                                <td><input  type="radio" name="susq4" value="2"> 2 </td>
+                                                <td><input  type="radio" name="susq4" value="3"> 3 </td>
+                                                <td><input  type="radio" name="susq4" value="4"> 4 </td>
+                                                <td><input  type="radio" name="susq4" value="5"> 5 </td>
+                                            </tr>
+                                            <tr>
+                                                <td>5. I found the various functions in the product were well integrated.</td>
+                                                <td><input  type="radio" name="susq5" value="1"> 1 </td>
+                                                <td><input  type="radio" name="susq5" value="2"> 2 </td>
+                                                <td><input  type="radio" name="susq5" value="3"> 3 </td>
+                                                <td><input  type="radio" name="susq5" value="4"> 4 </td>
+                                                <td><input  type="radio" name="susq5" value="5"> 5 </td>
+                                            </tr>
+                                            <tr>
+                                                <td>6. I thought there was too much inconsistency in this product.</td>
+                                                <td><input  type="radio" name="susq6" value="1"> 1 </td>
+                                                <td><input  type="radio" name="susq6" value="2"> 2 </td>
+                                                <td><input  type="radio" name="susq6" value="3"> 3 </td>
+                                                <td><input  type="radio" name="susq6" value="4"> 4 </td>
+                                                <td><input  type="radio" name="susq6" value="5"> 5 </td>
+                                            </tr>
+                                            <tr>
+                                                <td>7. I imagine that most people would learn to use this product very quickly.</td>
+                                                <td><input  type="radio" name="susq7" value="1"> 1 </td>
+                                                <td><input  type="radio" name="susq7" value="2"> 2 </td>
+                                                <td><input  type="radio" name="susq7" value="3"> 3 </td>
+                                                <td><input  type="radio" name="susq7" value="4"> 4 </td>
+                                                <td><input  type="radio" name="susq7" value="5"> 5 </td>
+                                            </tr>
+                                            <tr>
+                                                <td>8. I found the product very awkward to use.</td>
+                                                <td><input  type="radio" name="susq8" value="1"> 1 </td>
+                                                <td><input  type="radio" name="susq8" value="2"> 2 </td>
+                                                <td><input  type="radio" name="susq8" value="3"> 3 </td>
+                                                <td><input  type="radio" name="susq8" value="4"> 4 </td>
+                                                <td><input  type="radio" name="susq8" value="5"> 5 </td>
+                                            </tr>
+                                            <tr>
+                                                <td>9. I felt very confident using the product.</td>
+                                                <td><input  type="radio" name="susq9" value="1"> 1 </td>
+                                                <td><input  type="radio" name="susq9" value="2"> 2 </td>
+                                                <td><input  type="radio" name="susq9" value="3"> 3 </td>
+                                                <td><input  type="radio" name="susq9" value="4"> 4 </td>
+                                                <td><input  type="radio" name="susq9" value="5"> 5 </td>
+                                            </tr>
+                                            <tr>
+                                                <td>10. I needed to learn a lot of things before I could get going with this product.</td>
+                                                <td><input  type="radio" name="susq10" value="1"> 1 </td>
+                                                <td><input  type="radio" name="susq10" value="2"> 2 </td>
+                                                <td><input  type="radio" name="susq10" value="3"> 3 </td>
+                                                <td><input  type="radio" name="susq10" value="4"> 4 </td>
+                                                <td><input  type="radio" name="susq10" value="5"> 5 </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Overall -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="overall">Overall, I would rate the user-friendliness of this product as: </label>
+                                        <input type="radio" name="overall" value="none" checked hidden>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="overall" value="1">
+                                                    1. Worst Imaginable
+                                                <span class="circle"><span class="check"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="overall" value="2">
+                                                2. Awful
+                                                <span class="circle"><span class="check"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="overall" value="3">
+                                                3. Poor
+                                                <span class="circle"><span class="check"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="overall" value="4">
+                                                4. Ok
+                                                <span class="circle"><span class="check"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="overall" value="5">
+                                                5. Good
+                                                <span class="circle"><span class="check"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="overall" value="6">
+                                                6. Excellent
+                                                <span class="circle"><span class="check"></span></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-radio">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="overall" value="7">
+                                                7. Best Imaginable
+                                                <span class="circle"><span class="check"></span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Validation-->
+                                <div id="validationError" class="alert alert-danger" style="display: none">
+                                    <button type="button" class="close" onclick="hideNotif();">
+                                        <i class="material-icons">close</i>
+                                    </button>
+                                    <span>Please fill in all the required fields.</span>
+                                </div>
+                                <button class="btn btn-primary">Submit Feedback</button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="footer">
+                <div class="container-fluid">
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- With this tag, only logged in user can visit-->
+    <script defer src="/assets/js/auth.js"></script>
+
+    <script defer src="/assets/js/feedback.js"></script>
+
+    <!--   Core JS Files   -->
+    <script src="./assets/js/core/jquery.min.js"></script>
+    <script src="./assets/js/core/popper.min.js"></script>
+
+    <script src="./assets/js/core/bootstrap-material-design.min.js"></script>
+    <script src="https://unpkg.com/default-passive-events"></script>
+
+
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <!--  Notifications Plugin    -->
+    <script src="./assets/js/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="./assets/js/material-dashboard.js?v=2.1.0"></script>
+</body>
+
+</html>
