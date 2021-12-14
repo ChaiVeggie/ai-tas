@@ -7,6 +7,11 @@ const name = 'Grace';
 
 main();
 
+//Enable tooltip
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+
 async function main() {
     // Initialize AWS and create Polly service objects
     window.AWS.config.region = 'us-east-1';
@@ -162,8 +167,12 @@ async function main() {
 function createScene() {
     // Canvas
     const canvas = document.getElementById('renderCanvas');
-    canvas.style.width = `${window.innerWidth * 0.8}px`;
-    canvas.style.height = `${window.innerHeight * 0.8}px`;
+    // Make it visually fill the positioned parent
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    // then set the internal size to match
+    canvas.width = canvas.offsetWidth;
+    canvas.height = 700;
 
     // Scene
     const engine = new BABYLON.Engine(canvas, true, undefined, true);
@@ -177,8 +186,8 @@ function createScene() {
 
     // Handle window resize
     window.addEventListener('resize', function () {
-        canvas.style.width = `${window.innerWidth * 0.8}px`;
-        canvas.style.height = `${window.innerHeight * 0.8}px`;
+        canvas.width = canvas.offsetWidth;
+        canvas.height = 700;
         engine.resize();
     });
     engine.runRenderLoop(scene.render.bind(scene));
@@ -583,36 +592,70 @@ function createHost(
             layers: [{ name: 'Blink' }],
         }
     );
-
     return host;
 }
 
 // Return the host whose name matches the text of the current tab
 function getCurrentHost() {
-    const tab = document.getElementsByClassName('tab current')[0];
-    const name = tab.textContent;
+    //const tab = document.getElementsByClassName('tab current')[0];
+    //const name = tab.textContent;
 
-    return { name, host: speakers.get(name) };
+    // console.log("tab: " + tab);
+    // console.log("name: " + name);
+    // console.log("speakers.get(name): " + speakers.get(name));
+
+    //return { name, host: speakers.get(name) };
+    return { host: speakers.get("Grace") };
 }
 
 function initializeUX() {
 
-    // Initialise Emote Dropdown
     const { host } = getCurrentHost(speakers);
-    const emoteSelect = document.getElementById('emotes');
-    emoteSelect.length = 0;
-    const emotes = host.AnimationFeature.getAnimations('Emote');
-    emotes.forEach((emote, i) => {
-        const emoteOption = document.createElement('option');
-        emoteOption.text = emote;
-        emoteOption.value = emote;
-        emoteSelect.add(emoteOption, 0);
 
-        // Set the current item to the first emote
-        if (!i) {
-            emoteSelect.value = emote;
-        }
-    });
+    // Initialise Emote Dropdown
+    // const emoteSelect = document.getElementById('emotes');
+    // emoteSelect.length = 0;
+    // const emotes = host.AnimationFeature.getAnimations('Emote');
+    // emotes.forEach((emote, i) => {
+    //     const emoteOption = document.createElement('option');
+    //     emoteOption.text = emote;
+    //     emoteOption.value = emote;
+    //     emoteSelect.add(emoteOption, 0);
+
+    //     // Set the current item to the first emote
+    //     if (!i) {
+    //         emoteSelect.value = emote;
+    //     }
+    // });
+
+    //Sppech to text
+    // new speech recognition object
+    var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+    var recognition = new SpeechRecognition();
+
+    // This runs when the speech recognition service starts
+    recognition.onstart = function () {
+        console.log("We are listening. Try speaking into the microphone.");
+    };
+
+    recognition.onspeechend = function () {
+        // when user is done speaking
+        recognition.stop();
+        console.log("Stopped");
+    }
+
+    // This runs when the speech recognition service returns result
+    recognition.onresult = function (event) {
+        var transcript = event.results[0][0].transcript;
+        var confidence = event.results[0][0].confidence;
+        document.getElementsByClassName(`textEntryRASA`)[0].value = event.results[0][0].transcript;
+        //console.log(transcript);
+        //console.log(confidence);
+    };
+    document.getElementById("mic").onclick = () => {
+        // start recognition
+        recognition.start();
+    }
 
     // Play, pause, resume and stop the contents of the text input as speech
     // when buttons are clicked
@@ -671,6 +714,7 @@ function initializeUX() {
     function playRasaResponse() {
         const rasaChatInput = document.getElementsByClassName(`textEntryRASA`)[0].value;
         document.getElementsByClassName(`textEntryRASA`)[0].value = ""; //Reset textfield
+        document.getElementById("inputDisplay").innerHTML = rasaChatInput;
 
         //check if input field is empty
         if (rasaChatInput === "") {
@@ -689,9 +733,6 @@ function initializeUX() {
 
         saveToServer(rasaChatInput, 0);
 
-        //console.log('inputObjectData: ' + inputObjectData);
-        //console.log('rasaChatInput: ' + rasaChatInput);
-
         (async () => {
             const response = await fetch('http://localhost:5005/webhooks/rest/webhook', {
                 method: 'POST',
@@ -708,16 +749,26 @@ function initializeUX() {
             }).then(response => response.json())
                 .then((data) => {
                     //successful response
-                    // console.log('data: ' + JSON.stringify(data));
-                    // console.log('data[0].text: ' + data[0].text);
+                    //console.log('data: ' + JSON.stringify(data));
+                    //console.log('data[0].text: ' + data[0].text);
 
                     //Save the AI response to database, bot value set to 1 to show it is an AI
                     saveToServer(data[0].text, 1);
 
                     //Set the text field to the AI's response
-                    document.getElementById("rasaResponse").value = data[0].text;
+                    document.getElementById("outputDisplay").innerHTML = data[0].text;
 
-                    //Set gestures before playing.
+                    //Check if image is being returned by the RASA server, image is sent in data[1]. Exact image is in data[1].image.
+                    if (data[1] != null){
+                        // Image or diagram exists
+                            document.getElementById("imgDisplay").style.visibility = 'visible';
+                            document.getElementById("imgDisplay").src = "assets/img/diagrams/" + data[1].image;
+                    }
+                    else{
+                        document.getElementById("imgDisplay").style.visibility = 'hidden';
+                    }
+
+                    //Set gestures before playing
                     const gestureMap = host.GestureFeature.createGestureMap();
                     const gestureArray = host.GestureFeature.createGenericGestureArray([
                         'Gesture',
@@ -764,31 +815,31 @@ function initializeUX() {
     }
 
     // Update the text area text with gesture SSML markup when clicked
-    const gestureButton = document.getElementById('gestures');
-    gestureButton.onclick = () => {
-        // const { name, host } = getCurrentHost(speakers);
-        const speechInput = document.getElementsByClassName(
-            `textEntry ${name}`
-        )[0];
-        const gestureMap = host.GestureFeature.createGestureMap();
-        const gestureArray = host.GestureFeature.createGenericGestureArray([
-            'Gesture',
-        ]);
-        speechInput.value = HOST.aws.TextToSpeechUtils.autoGenerateSSMLMarks(
-            speechInput.value,
-            gestureMap,
-            gestureArray
-        );
-    };
+    // const gestureButton = document.getElementById('gestures');
+    // gestureButton.onclick = () => {
+    //     // const { name, host } = getCurrentHost(speakers);
+    //     const speechInput = document.getElementsByClassName(
+    //         `textEntry ${name}`
+    //     )[0];
+    //     const gestureMap = host.GestureFeature.createGestureMap();
+    //     const gestureArray = host.GestureFeature.createGenericGestureArray([
+    //         'Gesture',
+    //     ]);
+    //     speechInput.value = HOST.aws.TextToSpeechUtils.autoGenerateSSMLMarks(
+    //         speechInput.value,
+    //         gestureMap,
+    //         gestureArray
+    //     );
+    // };
 
     // Play emote on demand with emote button
-    const emoteButton = document.getElementById('playEmote');
-    emoteButton.onclick = () => {
-        host.GestureFeature.playGesture('Emote', emoteSelect.value);
-    };
+    // const emoteButton = document.getElementById('playEmote');
+    // emoteButton.onclick = () => {
+    //     host.GestureFeature.playGesture('Emote', emoteSelect.value);
+    // };
 
     // Initialize tab
-    const tab = document.getElementsByClassName('tab current')[0];
+    //const tab = document.getElementsByClassName('tab current')[0];
 
     //Pressing enter while on the focus on the input field sends the message.
     document.getElementsByClassName("textEntryRASA")[0].addEventListener('keydown', (event) => {

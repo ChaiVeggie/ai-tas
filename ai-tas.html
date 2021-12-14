@@ -65,7 +65,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="./ai-tas.html">
+                        <a class="nav-link" href="./feedback.html">
                             <i class="material-icons">create</i>
                             <p>Feedback</p>
                         </a>
@@ -121,36 +121,77 @@
             <!-- End Navbar -->
             <div class="content">
                 <div class="container-fluid">
-                    <!-- your content here -->
 
-                    <div class="row justify-content-center">
-                        <!--Loading screen-->
-                        <div id="loadScreen">
-                            <div id="loader"></div>
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title">AI-TAS</h4>
+                            <p class="card-category">Type in the text field, press enter to send.</p>
                         </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <!--Loading screen-->
+                                    <div id="loadScreen">
+                                        <div id="loader"></div>
+                                    </div>
 
-                        <!-- BABYLON CANVAS -->
-                        <canvas id="renderCanvas"></canvas>
+                                    <!-- BABYLON CANVAS -->
+                                    <canvas id="renderCanvas"></canvas>
+                                </div>
+                            </div>
+
+                            <!--AI-TAS control-->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="btn-group" role="group">
+                                        <button id="play" class="speechButton btn btn-primary"><i class="fa fa-play" aria-hidden="true"></i></button>
+                                        <button id="pause" class="speechButton btn btn-primary"><i class="fa fa-pause" aria-hidden="true"></i></button>
+                                        <button id="stop" class="speechButton btn btn-primary"><i class="fa fa-stop" aria-hidden="true"></i></button>
+
+                                        <!--Resume button?-->
+                                        <button id="resume" class="speechButton btn btn-primary"><i class="fa fa-play" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                                <!--View chat history button-->
+                                <div class="col">
+                                    <button class="btn btn-primary float-right" data-toggle="tooltip" data-placement="bottom" title="View chat history">
+                                    <a href="./chat-history.html"><i class="fa fa-history" aria-hidden="true"></i></button></a>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row justify-content-center">
+                                <div class="col-sm-10">
+                                    <input autofocus type="text" placeholder="Enter your questions here..."
+                                        class="textEntryRASA form-control input-lg" />
+                                </div>
+                                <div class="col-sm-auto">
+                                        <button id="rasa" class="btn btn-primary"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                                        <button id="mic" class="btn btn-danger"><i class="fa fa-microphone" aria-hidden="true"></i></button>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!--Chat history UI-->
-                    <div class="row justify-content-center">
-                        <div class="col-md-8">
-                            <textarea disabled class="form-control" id="rasaResponse" rows="3"></textarea>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-primary"> <a href="./chat-history.html"> View chat history </a></button>
-                        </div>
-                    </div>
-
-                    <!--Chat UI-->
-                    <div class="row justify-content-center">
-                        <div class="col-md-8">
-                            <input autofocus type="text" placeholder="Enter your questions here..."
-                                class="textEntryRASA form-control input-lg" />
-                        </div>
-                        <div class="col-md-2">
-                            <button id="rasa" class="btn btn-primary">Send</button>
+                    <div class="card">
+                        <div class="card-body">
+                            <!--Display-->
+                            <div class="row">
+                                <div class="col">
+                                    <h5>Input: <p id="inputDisplay"></p> </h5> 
+                                </div>
+                            </div>
+                            <!--Display-->
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5>AI: <p id="outputDisplay"></p> </h5> 
+                                </div>
+                                <div class="col-md-4">
+                                    <img id="imgDisplay" src="" alt="image" class="img-fluid" style="visibility: hidden;"/>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
 
@@ -171,13 +212,15 @@
                                     </speak>
                                 </textarea>
                             </div>
-                            <div>
+                            
+                            <!-- <div>
                                 <button id="play" class="speechButton material-icons">play_arrow</button>
                                 <button id="pause" class="speechButton material-icons">pause</button>
                                 <button id="resume" class="speechButton">Resume</button>
                                 <button id="stop" class="speechButton material-icons">stop</button>
 
                             </div>
+                            
                             <div>
                                 <button id="gestures" class="gestureButton">Generate Gestures</button>
                             </div>
@@ -187,7 +230,7 @@
                             <div>
                                 <button id="playEmote" class="gestureButton">Play Emote</button>
                             </div>
-                        </div>
+                        </div> -->
                         <!--End text to speech-->
                     </div>
                 </div>
