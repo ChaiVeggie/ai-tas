@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
 <head>
     <title>AI-TAS</title>
     <!-- Required meta tags -->
@@ -11,7 +10,7 @@
     <link rel="stylesheet" type="text/css"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
     <!-- Material Kit CSS -->
-    <link href="assets/css/material-dashboard.css" rel="stylesheet"/>
+    <link href="assets/css/material-dashboard.css" rel="stylesheet" />
 </head>
 <body class="dark-edition">
     <div class="main-panel">
@@ -20,11 +19,18 @@
                 <!-- your content here -->
                 <div class="card">
                     <div class="card-header card-header-primary">
-                        <h4 class="card-title">Login</h4>
-                        <!-- <p class="card-category">Created using Roboto Font Family</p> -->
+                        <h4 class="card-title">Sign Up</h4>
                     </div>
                     <div class="card-body">
-                        <form action="javascript:login();">
+                        <form action="javascript:signup();">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">Name</label>
+                                        <input type="text" id="name" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -41,29 +47,35 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="authError" class="alert alert-danger" style="display: none">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">Confirm password</label>
+                                        <input type="password" id="confirmPassword" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="validationError" class="alert alert-danger" style="display: none">
                                 <button type="button" class="close" onclick="hideNotif();">
                                     <i class="material-icons">close</i>
                                 </button>
-                                <span>Authentication error!</span>
+                                <span id="message"></span>
                             </div>
-                            <button class="btn btn-primary">Login</button>
-                            <a href="./signup.html">
-                                <div class="btn btn-secondary">Sign Up</div>
-                            </a>
+                            <button id="signup" class="btn btn-primary">Sign Up</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script defer src="/assets/js/login.js"></script>
+    <script defer src="/assets/js/signup.js"></script>
 
     <!-- Core JS Files -->
     <script src="./assets/js/core/jquery.min.js"></script>
     <script src="./assets/js/core/popper.min.js"></script>
 
     <script src="./assets/js/core/bootstrap-material-design.min.js"></script>
+    <script src="https://unpkg.com/default-passive-events"></script>
 
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="./assets/js/material-dashboard.js?v=2.1.0"></script>
