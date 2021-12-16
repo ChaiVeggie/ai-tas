@@ -152,7 +152,7 @@ async function main() {
     );
 
     // Hide the load screen and show the text input
-    document.getElementById('textToSpeech').style.display = 'inline-block';
+    //document.getElementById('textToSpeech').style.display = 'inline-block';
     document.getElementById('loadScreen').style.display = 'none';
 
     // Wait for the TextToSpeechFeature to be ready
@@ -633,22 +633,30 @@ function initializeUX() {
     var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
     var recognition = new SpeechRecognition();
 
-    // This runs when the speech recognition service starts
+    // Runs when speech recognition service starts
     recognition.onstart = function () {
-        console.log("We are listening. Try speaking into the microphone.");
+        //disable button
+        document.getElementById("mic").disabled = true;
+
+        document.getElementById("speechToTextStatus").innerHTML = "Listening...";
+        //console.log("Listening");
     };
 
     recognition.onspeechend = function () {
         // when user is done speaking
         recognition.stop();
-        console.log("Stopped");
+        document.getElementById("speechToTextStatus").innerHTML = "";
+        document.getElementById("mic").disabled = false;
+        //console.log("Stopped");
     }
 
     // This runs when the speech recognition service returns result
     recognition.onresult = function (event) {
         var transcript = event.results[0][0].transcript;
         var confidence = event.results[0][0].confidence;
-        document.getElementsByClassName(`textEntryRASA`)[0].value = event.results[0][0].transcript;
+        //document.getElementsByClassName(`textEntryRASA`)[0].value = event.results[0][0].transcript;
+        const rasaChatInput = event.results[0][0].transcript;
+        playRasaResponse(rasaChatInput);
         //console.log(transcript);
         //console.log(confidence);
     };
@@ -663,15 +671,18 @@ function initializeUX() {
         const button = document.getElementById(id);
         button.onclick = () => {
             const { host } = getCurrentHost(speakers);
-            const speechInput = document.getElementsByClassName(
-                `textEntry ${name}`
-            )[0];
+            
+            // const speechInput = document.getElementsByClassName(
+            //     `textEntry ${name}`
+            // )[0];
+            const speechInput = document.getElementById("placeholderForMediaButtons");
 
-            //console.log("SpeechInput.value: " + speechInput.value);
-            //console.log("ID: " + id); //play, pause, etc
+            console.log("SpeechInput.value: " + speechInput.value);
+            console.log("ID: " + id); //play, pause, etc
 
             if (id == 'rasa') {
-                playRasaResponse();
+                const rasaChatInput = document.getElementsByClassName(`textEntryRASA`)[0].value;
+                playRasaResponse(rasaChatInput);
             }
             else {
                 host.TextToSpeechFeature[id](speechInput.value);
@@ -711,18 +722,15 @@ function initializeUX() {
         })();
     }
 
-    function playRasaResponse() {
-        const rasaChatInput = document.getElementsByClassName(`textEntryRASA`)[0].value;
+    function playRasaResponse(rasaChatInput) {
+        //const rasaChatInput = document.getElementsByClassName(`textEntryRASA`)[0].value;
         document.getElementsByClassName(`textEntryRASA`)[0].value = ""; //Reset textfield
         document.getElementById("inputDisplay").innerHTML = rasaChatInput;
 
         //check if input field is empty
         if (rasaChatInput === "") {
             host.TextToSpeechFeature['play']("I can't read your mind, please enter something!");
-            return;
-        }
-        if (rasaChatInput === "something") {
-            host.TextToSpeechFeature['play']("ha ha, very funny");
+            document.getElementById("outputDisplay").innerHTML = "I can't read your mind, please enter something!";
             return;
         }
 
@@ -782,10 +790,14 @@ function initializeUX() {
 
                     //Play final output
                     host.TextToSpeechFeature['play'](outputWithSSML);
+
+                    //Set placeholder texts
+                    document.getElementById("placeholderForMediaButtons").value = outputWithSSML;
                 }).catch((error) => {
                     //network error
                     console.log(error);
                     host.TextToSpeechFeature['play']("Sorry, there seems to be some technical issues at the moment");
+                    document.getElementById("outputDisplay").innerHTML = "Sorry, there seems to be some technical issues at the moment";
                 });
 
             //const rasaResponseJson = await response.json(); //extract JSON from the http response
@@ -844,7 +856,8 @@ function initializeUX() {
     //Pressing enter while on the focus on the input field sends the message.
     document.getElementsByClassName("textEntryRASA")[0].addEventListener('keydown', (event) => {
         if (event.which === 13 && event.shiftKey == false) { //13 refers to the enter key
-            playRasaResponse();
+            const rasaChatInput = document.getElementsByClassName(`textEntryRASA`)[0].value;
+            playRasaResponse(rasaChatInput);
         }
     });
 }

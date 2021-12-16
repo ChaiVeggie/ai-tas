@@ -10,7 +10,6 @@
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
     <!-- Material Kit CSS -->
     <link href="assets/css/material-dashboard.css" rel="stylesheet" />
     <style>
@@ -210,14 +209,6 @@
                     <div class="collapse navbar-collapse justify-content-end">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="javascript:void(0)">
-                                    <i class="material-icons">notifications</i>
-                                    <p class="d-lg-none d-md-block">
-                                        Notifications
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="material-icons">person</i>
@@ -229,7 +220,6 @@
                                     <a class="dropdown-item" onclick="new Auth().logout();">Log Out</a>
                                 </div>
                             </li>
-                            <!-- your navbar here -->
                         </ul>
                     </div>
                 </div>
@@ -281,15 +271,9 @@
                                 </div>
                             </div>
                         -->
-
                         </main>
                     </section>
-
                 </div>
-                <footer class="footer">
-                    <div class="container-fluid">
-                    </div>
-                </footer>
             </div>
         </div>
         <!-- With this tag, only logged in user can visit-->
@@ -326,11 +310,11 @@
                         <div class="msg-info-name">${name}</div>
 
                             <div class="msg-info-time">
-                                ${ 
-                                    /* formatDate(new Date()) */ 
-                                    //formatDate(date)
-                                    date.slice(0, 16) //extract the first 16 char of the creation field
-                                }
+                                ${
+                    /* formatDate(new Date()) */
+                    //formatDate(date)
+                    date.slice(0, 16) //extract the first 16 char of the creation field
+                    }
                             </div>
                         </div>
                 
@@ -358,17 +342,17 @@
                         //var obj = data.data[i].message;
                         //console.log(data.data[i].message);
 
-                        if (user == data.data[i].user){ // Retrieve chat only for the user that logged in
-                            if(data.data[i].bot == "1"){ // Check if it is an AI reply
-                            appendMessage("AI", "right", data.data[i].message, data.data[i].creation)
+                        if (user == data.data[i].user) { // Retrieve chat only for the user that logged in
+                            if (data.data[i].bot == "1") { // Check if it is an AI reply
+                                appendMessage("AI", "right", data.data[i].message, data.data[i].creation)
                             }
-                            else{
+                            else {
                                 appendMessage(data.data[i].user, "left", data.data[i].message, data.data[i].creation)
                             }
                         }
                     }
 
-                    
+
                 });
 
 
