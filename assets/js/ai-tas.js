@@ -239,7 +239,7 @@ function createScene() {
     var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, scene);
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
     skyboxMaterial.backFaceCulling = false;
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("Assets/textures/skybox2", scene);
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/textures/skybox2", scene);
     skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
     skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
@@ -671,7 +671,7 @@ function initializeUX() {
         const button = document.getElementById(id);
         button.onclick = () => {
             const { host } = getCurrentHost(speakers);
-            
+
             // const speechInput = document.getElementsByClassName(
             //     `textEntry ${name}`
             // )[0];
@@ -746,7 +746,10 @@ function initializeUX() {
                 method: 'POST',
                 body: JSON.stringify(inputObjectData),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://103.164.54.130',
+                    'Access-Control-Allow-Methods': 'POST',
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
                 }
             }).then((response) => {
                 //Bad response returned
@@ -767,12 +770,12 @@ function initializeUX() {
                     document.getElementById("outputDisplay").innerHTML = data[0].text;
 
                     //Check if image is being returned by the RASA server, image is sent in data[1]. Exact image is in data[1].image.
-                    if (data[1] != null){
+                    if (data[1] != null) {
                         // Image or diagram exists
-                            document.getElementById("imgDisplay").style.visibility = 'visible';
-                            document.getElementById("imgDisplay").src = "assets/img/diagrams/" + data[1].image;
+                        document.getElementById("imgDisplay").style.visibility = 'visible';
+                        document.getElementById("imgDisplay").src = "assets/img/diagrams/" + data[1].image;
                     }
-                    else{
+                    else {
                         document.getElementById("imgDisplay").style.visibility = 'hidden';
                     }
 
